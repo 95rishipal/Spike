@@ -1,0 +1,286 @@
+{% extends 'base.html'%}
+{% load static  %}
+{% block javascript %}
+    <script src="{% static 'mysite/js/okzoom.js'%}"></script>  
+  <script>
+
+    jQuery.noConflict();
+    // Use jQuery via jQuery() instead of via $()
+    jQuery(document).ready(function(){
+        jQuery('.btn').attr('disabled',true);
+        jQuery('#fruit').attr('disabled',false);
+        jQuery('[name="file"]').attr('disabled',true);
+        jQuery(".errorlist").hide();
+        jQuery("#form1").change(function(){
+        console.log('Ajax Running Form1');
+        //event.preventDefault();
+        var data = new FormData(jQuery('form').get(0));
+        var conceptName = jQuery("#fruit").children("option:selected").val();
+        if(conceptName== ''){
+            alert("Please Select Fruit");
+        }else{
+            d = new Date();
+            data.append("fruit", conceptName);
+            data.append("name", d.getTime());
+            console.log(conceptName);
+            jQuery('#notice').html("<h5> Loading "+conceptName+" Model... <\h5><h5>Please Wait...</h5>");
+            jQuery('#myModal').modal('show')
+            jQuery.ajax({
+                type: "POST",
+                url: '/ajax/Uimg',
+                data: data,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    jQuery("#preview").removeAttr("src").attr("src","");
+                    jQuery("#preview").attr("src",data.name);
+                    jQuery("#result").html(data.result)
+                    jQuery('#myModal').modal('hide');
+                }
+                });
+        }
+        
+        });
+
+        jQuery("#camerabtn").click(function(){
+            jQuery('#mycamera').modal('show');
+        });
+        jQuery("#fruit").change(function(){
+            console.log("hello");
+            var conceptName = jQuery("#fruit").children("option:selected").val();
+            if(conceptName== ''){
+                alert("Please Select Fruit");
+                jQuery('.btn').attr('disabled',true);
+                jQuery(this).attr('disabled',false);
+                jQuery('[name="file"]').attr('disabled',true);
+            }else{
+                jQuery('.btn').attr('disabled',false);
+                jQuery('[name="file"]').attr('disabled',false);
+            }
+        });
+        jQuery("#layerid").change(function(){
+        console.log('Ajax Running Form2');
+        //event.preventDefault();
+        var conceptName = jQuery("#fruit").children("option:selected").val();
+         if(conceptName== ''){
+            alert("Please Select Fruit");
+        }else{
+                 var layer = jQuery(this).find('option:selected').val();
+                console.log(layer);
+                name = jQuery("#preview").attr("src");
+                console.log(name)
+                jQuery('#notice').html("<h5> Loading Feature Map... <\h5><h5>Please Wait...</h5>");
+                jQuery('#myModal').modal('show');
+                jQuery.ajax({
+                    type: "POST",
+                    url: '/ajax/Feature',
+                    data: {'layer':layer,'name':name},
+                    dataType: 'json',
+                    success: function(data) {
+                        //alert("Feature Map Loaded")
+                        console.log("Feature Map Loaded");
+                        jQuery("#zoom").attr("src","data:image/png;base64,"+data.data);
+                        jQuery('#myModal').modal('hide');
+                    }
+                    });
+        }
+       
+        });
+
+                // using jQuery
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        jQuery.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+    
+
+    jQuery(function(){
+      jQuery('#zoom').okzoom({
+            width: 200,
+            height: 200,
+            round: true,
+            scaleWidth: 1000,
+            background: "#fff",
+            shadow: "0 0 5px #000",
+            border: "1px solid black"
+        });
+    });
+
+  </script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+<!-- Modal -->
+<div class="modal fade bd-example-modal-sm" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Notification <img src="/static/mysite/load2.gif" width="40 px" height="40 px"></img></h5>
+        </div>
+        <div class="modal-body">
+            <div id="notice"></div>
+            
+        </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-sm" id="mycamera" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Camera</h5>
+        </div>
+        <div class="modal-body">
+            <div id="my_camera" style="margin-top: 5px;margin-left: 114px;"></div>
+            <input type=button value="Take Snapshot" class="btn btn-success" onClick="take_snapshot()" style="margin-left: 213px;margin-top: 19px;">
+        </div>
+
+        </div>
+    </div>
+</div>
+<!-- Contatiner -->   
+    <div class="container">
+        <h2 class="text-center">Spike Feature Map</h2>
+        <div class="row align-items-start">
+            <div class="col-sm-6">
+                <div class="card" style="width: 30rem; height: 28rem;">
+                <h4 class="card-header"> Input Section </h4>
+                    <div class="card-body" style="margin-left: 20px;">
+                        <b>Select Fruit:</b>
+                            <div class="dropdown" style="margin-left: 155px;">
+                                 <select id="fruit" name="fruit" class="btn btn-primary btn-sm">
+                                    <option value="">Select Fruit</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Kiwi">Kiwi</option>
+                                    <option value="Guava">Guava</option>
+                                </select>
+                            </div>
+                             <div class="form-group">
+                            <form method ="POST" id="form1" style="margin-top: 30px;" enctype="multipart/form-data"> 
+                                {% csrf_token %} 
+                                {{ form.as_p }} 
+                            </form>
+                            <input type="button" style="margin-top: -166px;" class="btn btn-primary" id="camerabtn" value="Capture Image"></input>
+                            <img src="{% static 'mysite/NoImage.png'%}"  style="border: 1px solid black; margin-left: 101px;" id="preview" alt="No Image" width="200 px" height="200 px"/> 
+                           </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card" style="width: 30rem; height: 28rem;">
+                    <h4 class="card-header"> Classification </h4>
+                    <div class="card-body" style="margin-left: 20px;">
+                        <h5> Predicted Class </h5>
+                        <h5> <p id="result"> </p></h5>    
+                    </div> 
+                </div>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-sm-12 text-center ">
+            <div class="card text-center mx-auto" style="width: 50rem;  margin-left: 135px;">    
+                <h4 class="card-header"> Feature Extraction </h4>   
+                <div class="card-body" style="margin-left: 20px;">
+                    <label>Select Layer:</label>
+                    <select id="layerid" name="layer" >
+                        <option> Select Layer </option>
+                        {% for key, value in layername.items %}
+                        <option value="{{key}}">{{key}} -> {{value}}</option>
+                        {% endfor %}
+                    </select> 
+                    <img src="data:image/png;base64,{{data}}"  style="border: 1px solid black;" id="zoom" alt="No Image" width="400px px" alt="No Level Selected" height="400 px"/> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="results" ></div>
+ 
+<!-- Webcam.min.js -->
+<script type="text/javascript" src="{% static 'mysite/js/webcam.js'%}"></script>
+
+<!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+ Webcam.set({
+    width: 320,
+    height: 240,
+    image_format: 'jpeg',
+    jpeg_quality: 90
+ });
+ Webcam.attach('#my_camera');
+
+<!-- Code to handle taking the snapshot and displaying it locally -->
+function take_snapshot() {
+    Webcam.snap( function(data_uri) {
+    //jQuery("#preview").attr("src",data_uri);
+    jQuery("#mycamera").modal('hide');
+    console.log('Ajax Running Form1');
+        //event.preventDefault();
+        var data = new FormData(jQuery('form').get(0));
+        
+        var conceptName = jQuery("#fruit").children("option:selected").val();
+        if(conceptName== ''){
+            alert("Please Select Fruit");
+        }else{
+            d = new Date();
+            data.append("fruit", conceptName);
+            data.append("name", d.getTime());
+            data.append('file', data_uri);
+            jQuery('#notice').html("<h5> Loading "+conceptName+" Model... <\h5><h5>Please Wait...</h5>");
+            jQuery('#myModal').modal('show')
+            jQuery.ajax({
+                type: "POST",
+                url: '/ajax/UimgC',
+                data: data,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    jQuery("#preview").removeAttr("src").attr("src","");
+                    jQuery("#preview").attr("src",data.name);
+                    jQuery("#result").html(data.result)
+                    jQuery('#myModal').modal('hide');
+                }
+                });
+        }
+        
+
+
+
+  });
+}
+</script>
+
+
+
+{% endblock content %}
+                            	

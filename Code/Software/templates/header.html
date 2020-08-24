@@ -1,0 +1,36 @@
+{% load static  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike</title>
+<link rel="stylesheet" href="{% static 'mysite/js/bootstrap.min.css'%}">
+<script src="{% static 'mysite/js/jquery.min.js'%}"></script>
+<script src="{% static 'mysite/js/bootstrap.min.js'%}"></script>
+ 
+<style type="text/css">
+	.wrapper {
+		min-height: 100vh;
+        position: relative;
+        margin: 0;
+        padding-bottom: 100px;
+	}
+</style>
+</head>
+<body class="wrapper">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <a class="navbar-brand" style="margin-top: 9px;">Spike</a>
+        </div>
+        <ul class="nav navbar-nav">
+        <li id = "Home"><a href="{% url 'index'%}">Home</a></li>
+        <li id = "Features"><a href="{% url 'Features'%}">Model Features</a></li>
+        <li id = "Classification"><a href="{% url 'Classification'%}">Classification</a></li>
+        <li id = "Thesis"><a href="{% url 'thesis'%}">Thesis</a></li>
+        
+        </ul>
+    </div>
+</nav>

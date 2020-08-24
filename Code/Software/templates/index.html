@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+{% load static  %}
+{% block javascript %}
+    
+{% endblock javascript %}
+{% block content %}
+<div class="container">
+    <div class="row align-items-start">
+        <div class="col-sm-6">
+           <table>
+               <tr>
+                   <td >
+                    <p style="text-align: justify;">Rishipal Singh is graduated from DAV University in 2017 with distinction. He is pursuing M. Tech. in the department of Computer Science and Engineering at Dr. B R Ambedkar National Institute of Technology, Jalandhar. His research interests are Machine Learning, Artificial Intelligence, Computer Vision, and Data Science. He has published 2 research papers in  International Conference and 1 book chapter.</p>
+                   </td>
+                   <td>
+                    <img src="{% static 'mysite/myimg.jpg'%}" style="width: 100px;margin-top: -72px;margin-left: 31px;"/>
+                   </td>
+               </tr>
+           </table>
+        </div>
+        <div class="col-sm-6">
+            <table>
+               <tr>
+                   <td>
+                   <p style="text-align: justify;"> Dr. Rajneesh Rani has received the B.Tech and M.Tech degrees,both in Computer Science and Engineering, from Punjab Technical University, Jalandhar, India in 2001 and Punjabi University Patiala, India in 2003 respectively. She has done her Ph.D in computer Science and Engineering from NIT Jalandhar in 2015.From 2003 to 2005, she was a lecturer in Guru Nanak Dev Engineering College, Ludhiana. Currently, she has been working as an assistant professor in NIT Jalandhar since 2007. Her teaching and research include areas like Image Processing, Pattern Recognition, Machine Learning, Computer
+Programming and Document Analysis and Recognition.</p>
+                   </td>
+                   <td>
+                    <img src="{% static 'mysite/mam.jpg'%}" style="width: 100px; margin-top: -189px; margin-left: 31px;"/>
+                   </td>
+               </tr>
+           </table>
+        </div>
+    </div>    
+</div>
+        
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends 'base.html'%}
+{% block content %}
+    <script language="javascript" type="text/javascript">
+        function dynamicdropdown(listindex)
+        {
+            switch (listindex)
+            {
+            case "Apple" :
+                document.getElementById("status").options[0]=new Option("Select Sub Fruit","");
+                document.getElementById("status").options[1]=new Option("Apple A","1");
+                document.getElementById("status").options[2]=new Option("Apple B","2");
+                document.getElementById("status").options[3]=new Option("Apple C","3");
+                document.getElementById("status").options[4]=new Option("Apple D","4");
+                document.getElementById("status").options[5]=new Option("Apple E","5");
+                document.getElementById("status").options[6]=new Option("Apple F","6");
+                break;
+            case "Kiwi" :
+            document.getElementById("status").options[0]=new Option("Select Sub Fruit","");
+                document.getElementById("status").options[1]=new Option("Kiwi A","7");
+                document.getElementById("status").options[2]=new Option("Kiwi B","8");
+                document.getElementById("status").options[3]=new Option("Kiwi C","9");
+                document.getElementById("status").options[4]=new Option("","");
+                document.getElementById("status").options[5]=new Option("","");
+                document.getElementById("status").options[6]=new Option("","");
+                break;
+            case "Guava" :
+            // document.getElementById("status").size = 3
+            document.getElementById("status").options[0]=new Option("Select Sub Fruit","");
+                document.getElementById("status").options[1]=new Option("Guava A","10");
+                document.getElementById("status").options[2]=new Option("Guava B","11");
+              
+                break;
+            }
+            return true;
+        }
+        </script>
+    <form method = "post" enctype="multipart/form-data"> 
+        {% csrf_token %} 
+        {{ form.as_table }} 
+        <div class="category_div" id="category_div" name="category">Fruit:
+            <select id="source" name="source" onchange="javascript: dynamicdropdown(this.options[this.selectedIndex].value);">
+            <option value="">Select Fruit</option>
+            <option value="Apple">APPLE</option>
+            <option value="Kiwi">KIWI</option>
+            <option value="Guava">GUAVA</option>
+            </select>
+        </div>
+        <div class="sub_category_div" id="sub_category_div">Sub Fruit:
+            <script type="text/javascript" language="JavaScript">
+            document.write('<select name="status" id="status" ><option value="">Select status</option></select>')
+            </script>
+        </div>
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+        <button type="submit">Upload</button> 
+    </form> 
+    {% endblock content %}
